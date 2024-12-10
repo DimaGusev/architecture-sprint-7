@@ -1,0 +1,57 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: dgusev-cluster-admin-rb
+subjects:
+- kind: User
+  name: dgusev-devops
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: dgusev-cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: dgusev-cluster-reader-rb
+subjects:
+- kind: User
+  name: dgusev-developer
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: dgusev-cluster-reader
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: dgusev-cluster-writer-rb
+subjects:
+- kind: User
+  name: dgusev-operator
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: dgusev-cluster-writer
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: dgusev-cluster-sec-audit-rb
+subjects:
+- kind: User
+  name: dgusev-security-specialist
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: dgusev-cluster-sec-audit
+  apiGroup: rbac.authorization.k8s.io
