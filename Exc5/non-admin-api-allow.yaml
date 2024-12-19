@@ -1,26 +1,46 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: deny-all
+  name: allow-dns-access
 spec:
-  podSelector: {}
+  podSelector:
+    matchLabels: {}
   policyTypes:
-  - Ingress
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - protocol: UDP
+      port: 53
 
 ---
+
 
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-frontend-to-backend
+  name: allow-backend-to-frontend
+  namespace: default
 spec:
   podSelector:
     matchLabels:
       role: back-end-api
   policyTypes:
   - Ingress
+  - Egress
   ingress:
   - from:
+      - podSelector:
+          matchLabels:
+            role: front-end
+  egress:
+  - to:
       - podSelector:
           matchLabels:
             role: front-end
@@ -30,15 +50,22 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-backend-to-frontend
+  name: allow-frontend-to-backend
+  namespace: default
 spec:
   podSelector:
     matchLabels:
       role: front-end
   policyTypes:
   - Ingress
+  - Egress
   ingress:
   - from:
+      - podSelector:
+          matchLabels:
+            role: back-end-api
+  egress:
+  - to:
       - podSelector:
           matchLabels:
             role: back-end-api
@@ -48,15 +75,22 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-admin-frontend-to-admin-backend
+  name: allow-admin-backend-to-admin-frontend
+  namespace: default
 spec:
   podSelector:
     matchLabels:
       role: admin-back-end-api
   policyTypes:
   - Ingress
+  - Egress
   ingress:
   - from:
+      - podSelector:
+          matchLabels:
+            role: admin-front-end
+  egress:
+  - to:
       - podSelector:
           matchLabels:
             role: admin-front-end
@@ -66,15 +100,22 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-admin-backend-to-admin-frontend
+  name: allow-admin-frontend-to-admin-backend
+  namespace: default
 spec:
   podSelector:
     matchLabels:
       role: admin-front-end
   policyTypes:
   - Ingress
+  - Egress
   ingress:
   - from:
+      - podSelector:
+          matchLabels:
+            role: admin-back-end-api
+  egress:
+  - to:
       - podSelector:
           matchLabels:
             role: admin-back-end-api
